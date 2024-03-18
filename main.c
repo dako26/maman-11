@@ -12,6 +12,7 @@ int main() {
     printf("please enter two numbers:\n");
     scanf("%u %u", &a, &b);
     unsigned int result = my_add(a, b);
+    result = binary_conversion(result);
     printf("The sum of %u and %u is %u\n", a, b,result);
     printf("thanks for using our calculator");
     return 0;
@@ -32,22 +33,17 @@ unsigned int binary_conversion(unsigned int n) {
     return binary;
 }
 
-    unsigned int my_add(unsigned int a, unsigned int b) {
-        a = binary_conversion(a);
-        b = binary_conversion(b);
-        printf("The binary of a is %u\n", a);
-        printf("The binary of b is %u\n", b);
-        unsigned int result = 0;
-        unsigned int carry = 0;
-        int i;
-        for (i = 0; i <= 15; i++) {
-            unsigned int a_bit = (a >> i) & 1;
-            unsigned int b_bit = (b >> i) & 1;
+unsigned int my_add(unsigned int a, unsigned int b) {
 
-            unsigned int sum = a_bit ^ b_bit ^ carry;
-            result = (result << 1) | sum;
-            carry = (a_bit & b_bit) | (b_bit & carry) | (a_bit & carry);
-        }
-        return result;
+    unsigned int carry = 0;
+    unsigned int result = 0;
+    unsigned int i;
+    for (i = 0; i < sizeof(int) * 4; i++) {
+        unsigned int bit1 = (a >> i) & 1;
+        unsigned int bit2 = (b >> i) & 1;
+        unsigned int sum = bit1 ^ bit2 ^ carry;
+        carry = (bit1 & bit2) | (bit1 & carry) | (bit2 & carry);
+        result |= (sum << i);
     }
-
+    return result;
+}
